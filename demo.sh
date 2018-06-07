@@ -10,6 +10,10 @@ STOPS=${DATA}/english-stopwords.txt
 PIVOTS=${DATA}/pivots
 MAPPED=${DATA}/demo_embs_mapped.txt
 
+SRC_NBRS=${DATA}/demo_embs_source.nn.txt
+TRG_NBRS=${DATA}/demo_embs_target.nn.txt
+MAP_NBRS=${DATA}/demo_embs_mapped.nn.txt
+
 if [ ! -d ${DATA} ]; then
     mkdir ${DATA}
 fi
@@ -45,13 +49,47 @@ if [ ! -e ${PIVOTS} ]; then
 fi
 
 # map the embeddings with a 5-layer ReLU
-cd src
-${PYTHON} -m learnmap \
-    --src-embeddings ${SOURCE} \
-    --trg-embeddings ${TARGET} \
-    --output ${MAPPED} \
-    --pivots ${PIVOTS} \
-    --activation relu \
-    --num-layers 5 \
-    --checkpoint-file ${DATA}/checkpoint
+if [ ! -e ${MAPPED} ]; then
+    cd src
+    ${PYTHON} -m learnmap \
+        --src-embeddings ${SOURCE} \
+        --trg-embeddings ${TARGET} \
+        --output ${MAPPED} \
+        --pivots ${PIVOTS} \
+        --activation relu \
+        --num-layers 5 \
+        --checkpoint-file ${DATA}/checkpoint
+    cd ../
+fi
+
+# run nearest neighbor analysis
+if [ ! -e ${SRC_NBRS} ]; then
+    cd nn-analysis
+    ${PYTHON} -m nearest_neighbors \
+        ${SOURCE} \
+        ${SRC_NBRS} \
+        --keys ${PIVOTS}
+    cd ../
+fi
+if [ ! -e ${TRG_NBRS} ]; then
+    cd nn-analysis
+    ${PYTHON} -m nearest_neighbors \
+        ${TARGET} \
+        ${TRG_NBRS} \
+        --keys ${PIVOTS}
+    cd ../
+fi
+if [ ! -e ${MAP_NBRS} ]; then
+    cd nn-analysis
+    ${PYTHON} -m nearest_neighbors \
+        ${MAPPED} \
+        ${MAP_NBRS} \
+        --keys ${PIVOTS}
+    cd ../
+fi
+cd nn-analysis
+${PYTHON} -m nn_changes \
+    ${SRC_NBRS} \
+    ${TRG_NBRS} \
+    ${MAP_NBRS}
 cd ../

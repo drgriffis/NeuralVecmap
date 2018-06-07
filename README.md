@@ -5,7 +5,7 @@ This is an open source implementation of the nonlinear mapping between embedding
 - D Newman-Griffis and A Zirikly, ["Embedding Transfer for Low-Resource Medical Named Entity
 Recognition: A Case Study on Patient Mobility"](http://drgriffis.github.io/papers/2018-BioNLP.pdf). In _Proceedings of BioNLP 2018_, 2018.
 
-The included `demo.sh` script will download two small sets of embeddings and learn a demonstration mapping between them.
+The included `demo.sh` script will download two small sets of embeddings, learn a demonstration mapping between them, and calculate changes in nearest neighbors.
 
 ## Dependencies
 
@@ -55,6 +55,13 @@ Getting the final projection of source embeddings into target embedding space is
 
 1. Take the projection function learned for each trained fold and project all source embeddings
 2. Average all _k_ projections to yield final projection of source embeddings
+
+## Nearest neighbor analysis
+
+This repository also includes the code used to calculate changes in nearest neighbors after the learned mapping is applied, in `nn-analysis`.
+
+- `nearest_neighbors.py` Tensorflow implementation of nearest neighbor calculation by cosine distance
+- `nn_changes.py` script to calculate how often nearest neighbors change after the mapping is learned
 
 ## Reference
 
