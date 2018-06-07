@@ -40,12 +40,12 @@ and target embeddings in one of two ways:
 Pivot terms are divided into _k_ folds. For each fold, a nonlinear projection is learned as follows:
 
 1. Construct a feed-forward DNN, taking source embeddings as input and generating output of the same size as target embeddings.  Model parameters include:
-  - Number of layers
-  - Activation function (tanh or ReLU)
-  - Dimensionality of hidden layers (by default, same as target embedding size)
+    - Number of layers
+    - Activation function (tanh or ReLU)
+    - Dimensionality of hidden layers (by default, same as target embedding size)
 2. Use minibatch gradient descent to train over each shared key in the training set
-  - Loss function is batch-wise MSE between output embeddings and reference target embeddings
-  - Optimization with Adam
+    - Loss function is batch-wise MSE between output embeddings and reference target embeddings
+    - Optimization with Adam
 3. After each epoch (all shared keys in training set), evaluate MSE on held-out set
 4. When held-out MSE stops decreasing, stop training and revert to previous best model parameters
 
